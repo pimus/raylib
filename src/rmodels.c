@@ -239,6 +239,109 @@ void DrawTriangleStrip3D(Vector3 *points, int pointCount, Color color)
     }
 }
 
+// Get Base Points of a cube in an array matrix
+// NOTE: Cube position is the center position
+Vector3 BaseCube[ ] = {
+    { -1.0f,  -1.0f,  1.0f}, //vertex 0
+    {  1.0f,  -1.0f,  1.0f}, //vertex 1
+    {  1.0f,   1.0f,  1.0f}, //vertex 2
+    { -1.0f,   1.0f,  1.0f}, //vertex 3
+        
+    { -1.0f,  -1.0f, -1.0f}, //vertex 4
+    {  1.0f,  -1.0f, -1.0f}, //vertex 5
+    {  1.0f,   1.0f, -1.0f}, //vertex 6
+    { -1.0f,   1.0f, -1.0f}  //vertex 7
+};
+
+// Draw cube scale multiplies vertex 
+// NOTE: Cube position is the center position
+void DrawCubeScale(Vector3 position, Vector3 scale, Color color)
+{
+    //scale multiplies the vertex
+    Vector3 vp[] = {
+        { BaseCube[0].x * scale.x, BaseCube[0].y * scale.y, BaseCube[0].z * scale.z }, //vertex 0
+        { BaseCube[1].x * scale.x, BaseCube[1].y * scale.y, BaseCube[1].z * scale.z }, //vertex 1
+        { BaseCube[2].x * scale.x, BaseCube[2].y * scale.y, BaseCube[2].z * scale.z }, //vertex 2
+        { BaseCube[3].x * scale.x, BaseCube[3].y * scale.y, BaseCube[3].z * scale.z }, //vertex 3
+        
+        { BaseCube[4].x * scale.x, BaseCube[4].y * scale.y, BaseCube[4].z * scale.z }, //vertex 4
+        { BaseCube[5].x * scale.x, BaseCube[5].y * scale.y, BaseCube[5].z * scale.z }, //vertex 5
+        { BaseCube[6].x * scale.x, BaseCube[6].y * scale.y, BaseCube[6].z * scale.z }, //vertex 6
+        { BaseCube[7].x * scale.x, BaseCube[7].y * scale.y, BaseCube[7].z * scale.z }  //vertex 7
+    };
+    
+    rlCheckRenderBatchLimit(36);
+    
+    rlPushMatrix();
+        // NOTE: Transformation is applied in inverse order (scale -> rotate -> translate)
+        rlTranslatef(position.x, position.y, position.z);
+        //rlRotatef(45, 0, 1, 0);
+        //rlScalef(1.0f, 1.0f, 1.0f);   // NOTE: Vertices are directly scaled on definition
+        
+        rlBegin(RL_TRIANGLES);
+            rlColor4ub(color.r, color.g, color.b, color.a);
+            
+            // Front face
+            rlVertex3f( vp[0].x, vp[0].y, vp[0].z );  // Bottom Left
+            rlVertex3f( vp[1].x, vp[1].y, vp[1].z );  // Bottom Right
+            rlVertex3f( vp[3].x, vp[3].y, vp[3].z );  // Top Left
+
+            rlVertex3f( vp[2].x, vp[2].y, vp[2].z );  // Top Right
+            rlVertex3f( vp[3].x, vp[3].y, vp[3].z );  // Top Left
+            rlVertex3f( vp[1].x, vp[1].y, vp[1].z );  // Bottom Right
+
+            // Back face
+            rlVertex3f( vp[5].x, vp[5].y, vp[5].z );  // Bottom Left
+            rlVertex3f( vp[4].x, vp[4].y, vp[4].z );  // Top Left
+            rlVertex3f( vp[6].x, vp[6].y, vp[6].z );  // Bottom Right
+
+            rlVertex3f( vp[7].x, vp[7].y, vp[7].z );  // Top Right
+            rlVertex3f( vp[6].x, vp[6].y, vp[6].z );  // Bottom Right
+            rlVertex3f( vp[4].x, vp[4].y, vp[4].z );  // Top Left
+
+            // Top face
+            rlVertex3f( vp[7].x, vp[7].y, vp[7].z );  // Top Left
+            rlVertex3f( vp[3].x, vp[3].y, vp[3].z );  // Bottom Left
+            rlVertex3f( vp[2].x, vp[2].y, vp[2].z );  // Bottom Right
+
+            rlVertex3f( vp[6].x, vp[6].y, vp[6].z );  // Top Right
+            rlVertex3f( vp[7].x, vp[7].y, vp[7].z );  // Top Left
+            rlVertex3f( vp[2].x, vp[2].y, vp[2].z );  // Bottom Right
+            
+            // Bottom face
+            rlVertex3f( vp[4].x, vp[4].y, vp[4].z );  // Top Left
+            rlVertex3f( vp[1].x, vp[1].y, vp[1].z );  // Bottom Right
+            rlVertex3f( vp[0].x, vp[0].y, vp[0].z );  // Bottom Left
+
+            rlVertex3f( vp[5].x, vp[5].y, vp[5].z );  // Top Right
+            rlVertex3f( vp[1].x, vp[1].y, vp[1].z );  // Bottom Right
+            rlVertex3f( vp[4].x, vp[4].y, vp[4].z );  // Top Left
+
+            // Right face
+            rlVertex3f( vp[5].x, vp[5].y, vp[5].z );  // Bottom Right
+            rlVertex3f( vp[6].x, vp[6].y, vp[6].z );  // Top Right
+            rlVertex3f( vp[2].x, vp[2].y, vp[2].z );  // Top Left
+            
+            rlVertex3f( vp[1].x, vp[1].y, vp[1].z );  // Bottom Left
+            rlVertex3f( vp[5].x, vp[5].y, vp[5].z );  // Bottom Right
+            rlVertex3f( vp[2].x, vp[2].y, vp[2].z );  // Top Left
+
+            // Left face
+            rlVertex3f( vp[4].x, vp[4].y, vp[4].z );  // Bottom Right
+            rlVertex3f( vp[3].x, vp[3].y, vp[3].z );  // Top Left
+            rlVertex3f( vp[7].x, vp[7].y, vp[7].z );  // Top Right
+
+            rlVertex3f( vp[0].x, vp[0].y, vp[0].z );  // Bottom Left
+            rlVertex3f( vp[3].x, vp[3].y, vp[3].z );  // Top Left
+            rlVertex3f( vp[4].x, vp[4].y, vp[4].z );  // Bottom Right
+        rlEnd();
+    
+    rlPopMatrix();
+    
+}
+
+
+
 // Draw cube
 // NOTE: Cube position is the center position
 void DrawCube(Vector3 position, float width, float height, float length, Color color)
